@@ -1,0 +1,22 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+footer {
+    margin-top: 80px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff !important;}
+
+.navbar-dark .navbar-brand {
+    color: #ffffff !important;
+}

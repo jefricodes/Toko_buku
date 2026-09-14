@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home - Toko Buku
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <h1>
+            Selamat Datang di Toko Buku
+        </h1>
+
+        <p class="text-muted">
+            Temukan buku favoritmu
+        </p>
+
+        <a
+            href="{% url 'books:book_list' %}"
+            class="btn btn-primary"
+        >
+            Lihat Semua Buku
+        </a>
+
+    </div>
+
+
+    <h3 class="mb-4">
+        Buku Terbaru
+    </h3>
+
+
+    <div class="row">
+
+        {% for book in books %}
+
+        <div class="col-md-3 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                {% if book.cover %}
+
+                <img
+                    src="{{ book.cover.url }}"
+                    class="card-img-top"
+                    style="height:300px; object-fit:cover;"
+                >
+
+                {% else %}
+
+                <div
+                    class="bg-secondary text-white d-flex align-items-center justify-content-center"
+                    style="height:300px;"
+                >
+                    Tidak ada gambar
+                </div>
+
+                {% endif %}
+
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ book.title }}
+                    </h5>
+
+                    <p class="text-muted">
+                        {{ book.author }}
+                    </p>
+
+                    <h6 class="text-primary">
+                        Rp {{ book.price }}
+                    </h6>
+
+                    <a
+                        href="{% url 'books:book_detail' book.id %}"
+                        class="btn btn-outline-primary btn-sm"
+                    >
+                        Detail
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+
+            <div class="alert alert-info">
+                Belum ada buku.
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

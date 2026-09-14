@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+
+{% if book %}
+Edit Buku
+{% else %}
+Tambah Buku
+{% endif %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <h4 class="mb-0">
+
+                        {% if book %}
+
+                            Edit Buku
+
+                        {% else %}
+
+                            Tambah Buku
+
+                        {% endif %}
+
+                    </h4>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <form
+                        method="POST"
+                        enctype="multipart/form-data"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <!-- JUDUL -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Judul Buku
+                            </label>
+
+                            <input
+                                type="text"
+                                name="title"
+                                class="form-control"
+                                value="{{ book.title|default:'' }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PENULIS -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Penulis
+                            </label>
+
+                            <input
+                                type="text"
+                                name="author"
+                                class="form-control"
+                                value="{{ book.author|default:'' }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- PENERBIT -->
+
+                        <!-- <div class="mb-3">
+
+                            <label class="form-label">
+                                Penerbit
+                            </label>
+
+                            <input
+                                type="text"
+                                name="publisher"
+                                class="form-control"
+                                value="{{ book.publisher|default:'' }}"
+                            >
+
+                        </div> -->
+
+
+                        <!-- ISBN -->
+
+                        <!-- <div class="mb-3">
+
+                            <label class="form-label">
+                                ISBN
+                            </label>
+
+                            <input
+                                type="text"
+                                name="isbn"
+                                class="form-control"
+                                value="{{ book.isbn|default:'' }}"
+                            >
+
+                        </div> -->
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Kategori
+                            </label>
+
+                            <select
+                                name="category"
+                                class="form-select"
+                                required
+                            >
+
+                                <option value="">
+                                    Pilih Kategori
+                                </option>
+
+                                {% for category in categories %}
+
+                                <option
+                                    value="{{ category.id }}"
+                                    {% if book.category_id == category.id %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ category.name }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Deskripsi
+                            </label>
+
+                            <textarea
+                                name="description"
+                                class="form-control"
+                                rows="5"
+                            >{{ book.description|default:'' }}</textarea>
+
+                        </div>
+
+
+                        <!-- PRICE -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Harga
+                            </label>
+
+                            <input
+                                type="number"
+                                name="price"
+                                class="form-control"
+                                value="{{ book.price|default:'' }}"
+                                min="0"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- STOCK -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Stok
+                            </label>
+
+                            <input
+                                type="number"
+                                name="stock"
+                                class="form-control"
+                                value="{{ book.stock|default:0 }}"
+                                min="0"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- COVER -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Cover Buku
+                            </label>
+
+                            <input
+                                type="file"
+                                name="cover"
+                                class="form-control"
+                                accept="image/*"
+                            >
+
+                        </div>
+
+
+                        {% if book.cover %}
+
+                        <div class="mb-4">
+
+                            <p>
+                                Cover saat ini:
+                            </p>
+
+                            <img
+                                src="{{ book.cover.url }}"
+                                style="
+                                    width: 150px;
+                                    height: 200px;
+                                    object-fit: cover;
+                                "
+                                class="rounded"
+                            >
+
+                        </div>
+
+                        {% endif %}
+
+
+                        <!-- BUTTON -->
+
+                        <div class="d-flex gap-2">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+
+                                {% if book %}
+                                    Simpan Perubahan
+                                {% else %}
+                                    Simpan Buku
+                                {% endif %}
+
+                            </button>
+
+
+                            <a
+                                href="{% url 'books:book_list' %}"
+                                class="btn btn-secondary"
+                            >
+                                Batal
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

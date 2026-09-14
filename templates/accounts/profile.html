@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Profile - Toko Buku
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+
+                    <h4 class="mb-0">
+                        Profile Saya
+                    </h4>
+
+                </div>
+
+
+                <div class="card-body">
+
+                    <div class="mb-3">
+
+                        <label class="text-muted">
+                            Username
+                        </label>
+
+                        <h5>
+                            {{ user.username }}
+                        </h5>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="text-muted">
+                            Email
+                        </label>
+
+                        <h5>
+                            {{ user.email }}
+                        </h5>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="text-muted">
+                            Nama Depan
+                        </label>
+
+                        <h5>
+                            {{ user.first_name|default:"-" }}
+                        </h5>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="text-muted">
+                            Nama Belakang
+                        </label>
+
+                        <h5>
+                            {{ user.last_name|default:"-" }}
+                        </h5>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <a
+                        href="{% url 'books:home' %}"
+                        class="btn btn-secondary"
+                    >
+                        Kembali
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
