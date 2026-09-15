@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Checkout
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <h2 class="mb-4">
+        🛍️ Checkout
+    </h2>
+
+
+    <div class="row">
+
+        <!-- FORM PEMBELI -->
+        <div class="col-md-7">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h4 class="mb-4">
+                        Data Pengiriman
+                    </h4>
+
+                    <form
+                        method="POST"
+                    >
+
+                        {% csrf_token %}
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Nama Lengkap
+                            </label>
+
+                            <input
+                                type="text"
+                                name="full_name"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Nomor Telepon
+                            </label>
+
+                            <input
+                                type="text"
+                                name="phone"
+                                class="form-control"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                Alamat Lengkap
+                            </label>
+
+                            <textarea
+                                name="address"
+                                class="form-control"
+                                rows="5"
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg"
+                        >
+                            Buat Pesanan
+                        </button>
+
+
+                        <a
+                            href="{% url 'orders:cart' %}"
+                            class="btn btn-outline-secondary btn-lg"
+                        >
+                            Kembali
+                        </a>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RINGKASAN -->
+        <div class="col-md-5">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h4>
+                        Ringkasan Pesanan
+                    </h4>
+
+                    <hr>
+
+
+                    {% for item in cart_items %}
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <div>
+
+                            <strong>
+                                {{ item.book.title }}
+                            </strong>
+
+                            <br>
+
+                            <small class="text-muted">
+
+                                {{ item.quantity }}
+                                ×
+                                Rp {{ item.book.price|floatformat:0 }}
+
+                            </small>
+
+                        </div>
+
+
+                        <div>
+
+                            Rp
+                            {{ item.get_subtotal|floatformat:0 }}
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+
+                    <hr>
+
+
+                    <div class="d-flex justify-content-between">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong class="text-primary fs-4">
+
+                            Rp {{ total|floatformat:0 }}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
