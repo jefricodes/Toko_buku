@@ -1,15 +1,29 @@
-# Virtual Environment
-env/
-venv/
-ENV/
+# Environment
+.env
 
-#Python cache
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 
-#django media & static lokal
-media/
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django
+*.log
+db.sqlite3
+
+# Static
 staticfiles/
 
-#File sensitif environment
-.env
+# Media
+media/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
