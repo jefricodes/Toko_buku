@@ -1,38 +1,47 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Checkout
+    Checkout
 {% endblock %}
-
 
 {% block content %}
 
 <div class="container py-5">
 
-    <h2 class="mb-4">
-        🛍️ Checkout
-    </h2>
+    <div class="mb-4">
+
+        <h2 class="fw-bold">
+            🧾 Checkout
+        </h2>
+
+        <p class="text-muted">
+            Lengkapi informasi pengiriman sebelum melakukan pembayaran.
+        </p>
+
+    </div>
 
 
-    <div class="row">
+    <form method="POST">
 
-        <!-- FORM PEMBELI -->
-        <div class="col-md-7">
+        {% csrf_token %}
 
-            <div class="card shadow-sm">
+        <div class="row g-4">
 
-                <div class="card-body">
 
-                    <h4 class="mb-4">
-                        Data Pengiriman
-                    </h4>
+            <!-- FORM PENGIRIMAN -->
 
-                    <form
-                        method="POST"
-                    >
+            <div class="col-lg-7">
 
-                        {% csrf_token %}
+                <div class="card border-0 shadow-sm">
 
+                    <div class="card-body p-4">
+
+                        <h5 class="fw-bold mb-4">
+                            📍 Informasi Pengiriman
+                        </h5>
+
+
+                        <!-- NAMA -->
 
                         <div class="mb-3">
 
@@ -44,11 +53,15 @@ Checkout
                                 type="text"
                                 name="full_name"
                                 class="form-control"
+                                placeholder="Masukkan nama lengkap"
+                                value="{{ request.POST.full_name }}"
                                 required
                             >
 
                         </div>
 
+
+                        <!-- TELEPON -->
 
                         <div class="mb-3">
 
@@ -57,14 +70,18 @@ Checkout
                             </label>
 
                             <input
-                                type="text"
+                                type="tel"
                                 name="phone"
                                 class="form-control"
+                                placeholder="Contoh: 08123456789"
+                                value="{{ request.POST.phone }}"
                                 required
                             >
 
                         </div>
 
+
+                        <!-- ALAMAT -->
 
                         <div class="mb-3">
 
@@ -74,102 +91,111 @@ Checkout
 
                             <textarea
                                 name="address"
-                                class="form-control"
                                 rows="5"
+                                class="form-control"
+                                placeholder="Masukkan alamat lengkap..."
                                 required
-                            ></textarea>
+                            >{{ request.POST.address }}</textarea>
+
+                        </div>
+
+
+                        <div class="alert alert-info">
+
+                            <strong>💡 Informasi:</strong>
+
+                            <br>
+
+                            Pastikan nama, nomor telepon,
+                            dan alamat sudah benar sebelum
+                            melanjutkan pembayaran.
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RINGKASAN -->
+
+            <div class="col-lg-5">
+
+                <div
+                    class="card border-0 shadow-sm"
+                    style="position: sticky; top: 20px;"
+                >
+
+                    <div class="card-body p-4">
+
+                        <h5 class="fw-bold mb-4">
+                            📚 Ringkasan Pesanan
+                        </h5>
+
+
+                        {% for item in cart_items %}
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <div class="me-3">
+
+                                <div class="fw-semibold">
+                                    {{ item.book.title }}
+                                </div>
+
+                                <small class="text-muted">
+                                    {{ item.quantity }} ×
+                                    Rp {{ item.book.price|floatformat:0 }}
+                                </small>
+
+                            </div>
+
+
+                            <div class="fw-semibold text-nowrap">
+
+                                Rp
+                                {{ item.get_subtotal|floatformat:0 }}
+
+                            </div>
+
+                        </div>
+
+                        {% endfor %}
+
+
+                        <hr>
+
+
+                        <div class="d-flex justify-content-between">
+
+                            <span class="fw-bold">
+                                Total Pembayaran
+                            </span>
+
+                            <span class="fw-bold text-primary fs-5">
+                                Rp {{ total|floatformat:0 }}
+                            </span>
 
                         </div>
 
 
                         <button
                             type="submit"
-                            class="btn btn-success btn-lg"
+                            class="btn btn-primary btn-lg w-100 mt-4"
                         >
-                            Buat Pesanan
+                            Lanjutkan Pesanan →
                         </button>
 
 
                         <a
                             href="{% url 'orders:cart' %}"
-                            class="btn btn-outline-secondary btn-lg"
+                            class="btn btn-outline-secondary w-100 mt-2"
                         >
-                            Kembali
+                            ← Kembali ke Keranjang
                         </a>
 
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- RINGKASAN -->
-        <div class="col-md-5">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h4>
-                        Ringkasan Pesanan
-                    </h4>
-
-                    <hr>
-
-
-                    {% for item in cart_items %}
-
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <div>
-
-                            <strong>
-                                {{ item.book.title }}
-                            </strong>
-
-                            <br>
-
-                            <small class="text-muted">
-
-                                {{ item.quantity }}
-                                ×
-                                Rp {{ item.book.price|floatformat:0 }}
-
-                            </small>
-
-                        </div>
-
-
-                        <div>
-
-                            Rp
-                            {{ item.get_subtotal|floatformat:0 }}
-
-                        </div>
-
-                    </div>
-
-                    {% endfor %}
-
-
-                    <hr>
-
-
-                    <div class="d-flex justify-content-between">
-
-                        <span>
-                            Total
-                        </span>
-
-                        <strong class="text-primary fs-4">
-
-                            Rp {{ total|floatformat:0 }}
-
-                        </strong>
-
                     </div>
 
                 </div>
@@ -178,7 +204,7 @@ Checkout
 
         </div>
 
-    </div>
+    </form>
 
 </div>
 

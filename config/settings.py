@@ -9,8 +9,10 @@ https://docs.djangoproject.com/en/6.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
+import os
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +22,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#qf6y&3%b76x#%+e0$sd=u^t73s#4p3xt*&+l*6k0(k=by8@xz'
+from dotenv import load_dotenv
+load_dotenv()
+
+SECRET_KEY = os.getenv(
+    'SECRET_KEY'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv(
+    'DEBUG',
+    'False'
+).lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv(
+        'ALLOWED_HOSTS',
+        ''
+    ).split(',')
+    if host.strip()
+]
 
 
 # Application definition
@@ -41,6 +58,7 @@ INSTALLED_APPS = [
     'books',
     'orders',
     'accounts',
+    'dashboard',
 
 ]
 
@@ -148,3 +166,53 @@ MAILERS = {
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME' : timedelta (days=7),
+}
+
+# ==============================
+# SECURITY
+# ==============================
+
+if not DEBUG:
+
+    SESSION_COOKIE_SECURE = True
+
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_SSL_REDIRECT = True
+
+    SECURE_HSTS_SECONDS = 31536000
+
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SECURE_HSTS_PRELOAD = True
+
+
+# ==============================
+# MIDTRANS
+# ==============================
+
+MIDTRANS_SERVER_KEY = os.getenv(
+    'MIDTRANS_SERVER_KEY'
+)
+
+MIDTRANS_CLIENT_KEY = os.getenv(
+    'MIDTRANS_CLIENT_KEY'
+)
+
+MIDTRANS_IS_PRODUCTION = (
+    os.getenv(
+        'MIDTRANS_IS_PRODUCTION',
+        'False'
+    ).lower() == 'true'
+)

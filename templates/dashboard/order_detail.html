@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Detail Pesanan
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                📦 Detail Pesanan
+            </h2>
+
+            <p class="text-muted mb-0">
+                {{ order.order_number }}
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'dashboard:order_list' %}"
+            class="btn btn-secondary"
+        >
+            ← Kembali
+        </a>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- Informasi Customer -->
+
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0 mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-4">
+                        👤 Informasi Pelanggan
+                    </h5>
+
+                    <p>
+                        <strong>Username:</strong><br>
+                        {{ order.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Nama:</strong><br>
+                        {{ order.full_name }}
+                    </p>
+
+                    <p>
+                        <strong>Telepon:</strong><br>
+                        {{ order.phone }}
+                    </p>
+
+                    <p class="mb-0">
+                        <strong>Alamat:</strong><br>
+                        {{ order.address }}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">
+                        🔄 Status Pesanan
+                    </h5>
+
+                    <div class="mb-3">
+
+                        <span class="badge bg-secondary fs-6">
+                            {{ order.get_status_display }}
+                        </span>
+
+                    </div>
+
+
+                    {% if order.status != 'completed' and order.status != 'cancelled' %}
+
+                    <form
+                        method="POST"
+                        action="{% url 'dashboard:update_order_status' order.order_number %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <label class="form-label">
+                            Ubah Status
+                        </label>
+
+                        <select
+                            name="status"
+                            class="form-select mb-3"
+                            required
+                        >
+
+                            <option value="">
+                                -- Pilih Status --
+                            </option>
+
+                            {% if order.status == 'pending' %}
+
+                                <option value="paid">
+                                    Sudah Dibayar
+                                </option>
+
+                                <option value="cancelled">
+                                    Dibatalkan
+                                </option>
+
+                            {% elif order.status == 'paid' %}
+
+                                <option value="processing">
+                                    Sedang Diproses
+                                </option>
+
+                                <option value="cancelled">
+                                    Dibatalkan
+                                </option>
+
+                            {% elif order.status == 'processing' %}
+
+                                <option value="shipped">
+                                    Dikirim
+                                </option>
+
+                            {% elif order.status == 'shipped' %}
+
+                                <option value="completed">
+                                    Selesai
+                                </option>
+
+                            {% endif %}
+
+                        </select>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            Simpan Status
+                        </button>
+
+                    </form>
+
+                    {% else %}
+
+                    <div class="alert alert-secondary mb-0">
+
+                        Status order ini sudah final dan
+                        tidak dapat diubah.
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Item Pesanan -->
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-4">
+                        📚 Buku yang Dibeli
+                    </h5>
+
+                    <div class="table-responsive">
+
+                        <table class="table align-middle">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Buku</th>
+                                    <th>Harga</th>
+                                    <th>Qty</th>
+                                    <th>Subtotal</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for item in order.items.all %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ item.book_title }}
+                                    </td>
+
+                                    <td>
+                                        Rp {{ item.price|floatformat:0 }}
+                                    </td>
+
+                                    <td>
+                                        {{ item.quantity }}
+                                    </td>
+
+                                    <td>
+                                        Rp {{ item.subtotal|floatformat:0 }}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                            <tfoot>
+
+                                <tr>
+
+                                    <th colspan="3">
+                                        Total
+                                    </th>
+
+                                    <th>
+                                        Rp {{ order.total|floatformat:0 }}
+                                    </th>
+
+                                </tr>
+
+                            </tfoot>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

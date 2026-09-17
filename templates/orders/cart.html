@@ -1,126 +1,147 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Keranjang Belanja
+    Keranjang Belanja
 {% endblock %}
-
 
 {% block content %}
 
 <div class="container py-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="mb-4">
 
-        <h2>
+        <h2 class="fw-bold">
             🛒 Keranjang Belanja
         </h2>
 
-        <a
-            href="{% url 'books:book_list' %}"
-            class="btn btn-outline-primary"
-        >
-            ← Lanjut Belanja
-        </a>
+        <p class="text-muted">
+            Periksa kembali buku yang ingin kamu beli.
+        </p>
 
     </div>
 
 
     {% if cart_items %}
 
-        <div class="table-responsive">
+    <div class="row g-4">
 
-            <table class="table table-bordered align-middle">
+        <!-- DAFTAR PRODUK -->
 
-                <thead class="table-dark">
+        <div class="col-lg-8">
 
-                    <tr>
+            {% for item in cart_items %}
 
-                        <th>Buku</th>
+            <div class="card border-0 shadow-sm mb-3">
 
-                        <th>Harga</th>
+                <div class="card-body">
 
-                        <th width="180">
-                            Jumlah
-                        </th>
-
-                        <th>Subtotal</th>
-
-                        <th>Aksi</th>
-
-                    </tr>
-
-                </thead>
+                    <div class="row align-items-center g-3">
 
 
-                <tbody>
+                        <!-- COVER -->
 
-                    {% for item in cart_items %}
+                        <div class="col-4 col-md-2">
 
-                    <tr>
+                            {% if item.book.cover %}
 
-                        <td>
+                                <img
+                                    src="{{ item.book.cover.url }}"
+                                    alt="{{ item.book.title }}"
+                                    class="img-fluid rounded"
+                                    style="height: 120px; width: 90px; object-fit: cover;"
+                                >
 
-                            <strong>
+                            {% else %}
+
+                                <div
+                                    class="bg-light rounded d-flex align-items-center justify-content-center"
+                                    style="height: 120px; width: 90px;"
+                                >
+                                    📚
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- INFORMASI -->
+
+                        <div class="col-8 col-md-4">
+
+                            <h5 class="fw-bold mb-1">
                                 {{ item.book.title }}
-                            </strong>
+                            </h5>
 
-                            <br>
-
-                            <small class="text-muted">
+                            <p class="text-muted mb-1">
                                 {{ item.book.author }}
-                            </small>
+                            </p>
 
-                        </td>
+                            <div class="text-primary fw-semibold">
+                                Rp {{ item.book.price|floatformat:0 }}
+                            </div>
 
-
-                        <td>
-
-                            Rp {{ item.book.price|floatformat:0 }}
-
-                        </td>
+                        </div>
 
 
-                        <td>
+                        <!-- QUANTITY -->
+
+                        <div class="col-6 col-md-3">
 
                             <form
                                 method="POST"
                                 action="{% url 'orders:update_cart' item.id %}"
-                                class="d-flex gap-2"
                             >
 
                                 {% csrf_token %}
 
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    value="{{ item.quantity }}"
-                                    min="1"
-                                    max="{{ item.book.stock }}"
-                                    class="form-control"
-                                >
+                                <label class="form-label small">
+                                    Jumlah
+                                </label>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-                                    Update
-                                </button>
+                                <div class="input-group">
+
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        value="{{ item.quantity }}"
+                                        min="1"
+                                        max="{{ item.book.stock }}"
+                                        class="form-control text-center"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        Update
+                                    </button>
+
+                                </div>
 
                             </form>
 
-                        </td>
+                        </div>
 
 
-                        <td>
+                        <!-- SUBTOTAL -->
 
-                            <strong>
+                        <div class="col-4 col-md-2">
+
+                            <small class="text-muted">
+                                Subtotal
+                            </small>
+
+                            <div class="fw-bold">
                                 Rp {{ item.get_subtotal|floatformat:0 }}
-                            </strong>
+                            </div>
 
-                        </td>
+                        </div>
 
 
-                        <td>
+                        <!-- HAPUS -->
+
+                        <div class="col-2 col-md-1 text-end">
 
                             <form
                                 method="POST"
@@ -131,70 +152,15 @@ Keranjang Belanja
 
                                 <button
                                     type="submit"
-                                    class="btn btn-danger"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Hapus"
                                 >
-                                    🗑️ Hapus
+                                    🗑️
                                 </button>
 
                             </form>
 
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <div class="row justify-content-end">
-
-            <div class="col-md-5">
-
-                <div class="card shadow-sm">
-
-                    <div class="card-body">
-
-                        <h4>
-                            Ringkasan Belanja
-                        </h4>
-
-                        <hr>
-
-                        <div class="d-flex justify-content-between">
-
-                            <span>
-                                Total
-                            </span>
-
-                            <strong class="text-primary">
-
-                                Rp {{ total|floatformat:0 }}
-
-                            </strong>
-
                         </div>
-
-                        <div class="d-grid mt-4">
-
-                            <a
-                                href="{% url 'orders:checkout' %}"
-                                class="btn btn-success btn-lg"
-                            >
-                                Checkout
-                            </a>
-
-                        </div>
-
-                        <small class="text-muted d-block mt-2">
-
-                            Fitur checkout akan kita buat pada tahap berikutnya.
-
-                        </small>
 
                     </div>
 
@@ -202,33 +168,110 @@ Keranjang Belanja
 
             </div>
 
+            {% endfor %}
+
         </div>
+
+
+        <!-- RINGKASAN -->
+
+        <div class="col-lg-4">
+
+            <div
+                class="card border-0 shadow-sm"
+                style="position: sticky; top: 20px;"
+            >
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-4">
+                        🧾 Ringkasan Belanja
+                    </h5>
+
+
+                    <div class="d-flex justify-content-between mb-3">
+
+                        <span class="text-muted">
+                            Jumlah item
+                        </span>
+
+                        <span>
+                            {{ cart_items|length }}
+                        </span>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="d-flex justify-content-between mb-4">
+
+                        <span class="fw-bold">
+                            Total
+                        </span>
+
+                        <span class="fw-bold text-primary fs-5">
+                            Rp {{ total|floatformat:0 }}
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        href="{% url 'orders:checkout' %}"
+                        class="btn btn-primary btn-lg w-100"
+                    >
+                        Lanjut ke Checkout →
+                    </a>
+
+
+                    <a
+                        href="{% url 'books:book_list' %}"
+                        class="btn btn-outline-secondary w-100 mt-2"
+                    >
+                        ← Lanjut Belanja
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     {% else %}
 
-        <div class="text-center py-5">
+    <!-- EMPTY CART -->
 
-            <div class="display-1">
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <div class="display-1 mb-3">
                 🛒
             </div>
 
-            <h3 class="mt-3">
-                Keranjang masih kosong
+            <h3 class="fw-bold">
+                Keranjang Kamu Masih Kosong
             </h3>
 
             <p class="text-muted">
-                Yuk pilih buku yang ingin kamu beli.
+                Yuk cari buku yang ingin kamu beli.
             </p>
 
             <a
                 href="{% url 'books:book_list' %}"
                 class="btn btn-primary"
             >
-                Lihat Buku
+                📚 Mulai Belanja
             </a>
 
         </div>
+
+    </div>
 
     {% endif %}
 

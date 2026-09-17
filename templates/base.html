@@ -32,32 +32,37 @@
 
 <body>
 
-<nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+<nav class="navbar navbar-expand-lg bg-light shadow-sm">
 
     <div class="container">
-
         <a
-            class="navbar-brand"
-            href="{% url 'books:home' %}"
-        >
-            📚 Toko Buku
+            class="navbar-brand fw-bold text-white"
+            href="{% url 'books:home' %}">
+            📚 <span style="background: linear-gradient(45deg, #3498db, #2ecc71); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BookStore</span>
         </a>
+
 
         <button
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
         >
+
             <span class="navbar-toggler-icon"></span>
+
         </button>
+
 
         <div
             class="collapse navbar-collapse"
-            id="navbarNav"
+            id="mainNavbar"
         >
 
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
 
@@ -70,66 +75,117 @@
 
                 </li>
 
+
                 <li class="nav-item">
 
                     <a
                         class="nav-link"
                         href="{% url 'books:book_list' %}"
                     >
-                        📚 Book
+                        📚 Buku
                     </a>
 
                 </li>
+
+
+                {% if user.is_staff %}
 
                 <li class="nav-item">
+
                     <a
                         class="nav-link"
-                        href="{% url 'orders:cart' %}"
+                        href="{% url 'dashboard:home' %}"
                     >
-                        🛒 Cart
-
-                        {% if cart_count > 0 %}
-
-                            <span class="badge bg-danger">
-                                {{ cart_count }}
-                            </span>
-
-                        {% endif %}
+                        📊 Dashboard
                     </a>
 
                 </li>
+
+                {% endif %}
+
+            </ul>
+
+
+            <ul class="navbar-nav">
 
                 {% if user.is_authenticated %}
 
                     <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="{% url 'orders:cart' %}"
+                        >
+                            🛒 Keranjang
+
+                            {% if cart_count > 0 %}
+
+                                <span class="badge bg-danger">
+                                    {{ cart_count }}
+                                </span>
+
+                            {% endif %}
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
                         <a
                             class="nav-link"
                             href="{% url 'orders:order_list' %}"
                         >
-                            📦 Pesanan Saya
+                            📦 Pesanan
                         </a>
+
                     </li>
 
-                    <li class="nav-item">
+
+                    <li class="nav-item dropdown">
 
                         <a
-                            class="nav-link"
-                            href="{% url 'accounts:profile' %}"
+                            class="nav-link dropdown-toggle"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
                         >
                             👤 {{ user.username }}
                         </a>
 
-                    </li>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{% url 'accounts:profile' %}"
+                                >
+                                    Profile
+                                </a>
+
+                            </li>
 
 
-                    <li class="nav-item">
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
-                        <a
-                            class="nav-link text-warning"
-                            href="{% url 'accounts:logout' %}"
-                        >
-                            Logout
-                        </a>
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item text-danger"
+                                    href="{% url 'accounts:logout' %}"
+                                >
+                                    Logout
+                                </a>
+
+                            </li>
+
+                        </ul>
 
                     </li>
 
@@ -150,10 +206,10 @@
                     <li class="nav-item">
 
                         <a
-                            class="nav-link"
+                            class="btn btn-primary ms-lg-2"
                             href="{% url 'accounts:register' %}"
                         >
-                            Register
+                            Daftar
                         </a>
 
                     </li>
@@ -177,22 +233,44 @@
 </main>
 
 
-<footer class="bg-dark text-white mt-5">
+<footer class="site-footer">
 
-    <div class="container py-4 text-center">
+    <div class="container">
 
-        <p class="mb-0">
-            © 2026 Toko Buku
-        </p>
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <h5>
+                    📚 BookStore
+                </h5>
+
+                <p class="text-dark-50">
+                    Toko buku online sederhana
+                    yang dibangun menggunakan Django.
+                </p>
+
+            </div>
+
+
+            <div class="col-md-6 text-md-end">
+
+                <p class="text-dark-50 mb-0">
+                    © 2026 BookStore.
+                    All rights reserved.
+                </p>
+
+            </div>
+
+        </div>
 
     </div>
 
 </footer>
 
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
 
 </body>
 

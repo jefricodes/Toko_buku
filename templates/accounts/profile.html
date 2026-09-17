@@ -83,21 +83,15 @@ Profile - Toko Buku
                     
                     <div class="mt-4">
 
-                        <a
-                            href="{% url 'orders:order_list' %}"
-                            class="btn btn-primary"
-                        >
-                            📦 Lihat Pesanan Saya
+                        <a href="{% url 'orders:order_list' %}" class="btn btn-primary">
+                            📦 Lihat Pesanan Saya 
+                        </a>
+
+                        <a href="{% url 'books:home' %}" class="btn btn-secondary">
+                        Kembali
                         </a>
 
                     </div>
-
-                    <a
-                        href="{% url 'books:home' %}"
-                        class="btn btn-secondary"
-                    >
-                        Kembali
-                    </a>
 
                 </div>
 

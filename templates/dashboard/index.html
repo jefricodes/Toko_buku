@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Admin Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold">
+                📊 Admin Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Selamat datang, {{ user.username }}
+            </p>
+        </div>
+
+        <a
+            href="{% url 'admin:index' %}"
+            class="btn btn-dark"
+        >
+            ⚙️ Django Admin
+        </a>
+
+    </div>
+
+
+    <!-- Summary Cards -->
+
+    <div class="row g-4 mb-4">
+
+        <!-- Total Buku -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Total Buku
+                            </p>
+
+                            <h3 class="fw-bold">
+                                {{ summary.total_books }}
+                            </h3>
+                        </div>
+
+                        <div class="fs-1">
+                            📚
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stok Menipis -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Stok Menipis
+                            </p>
+
+                            <h3 class="fw-bold">
+                                {{ summary.low_stock_books }}
+                            </h3>
+                        </div>
+
+                        <div class="fs-1">
+                            ⚠️
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Pesanan -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Total Pesanan
+                            </p>
+
+                            <h3 class="fw-bold">
+                                {{ summary.total_orders }}
+                            </h3>
+                        </div>
+
+                        <div class="fs-1">
+                            📦
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Omzet -->
+        <div class="col-md-6 col-xl-3">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <p class="text-muted mb-1">
+                                Omzet
+                            </p>
+
+                            <h5 class="fw-bold">
+                                Rp {{ summary.total_revenue|floatformat:0 }}
+                            </h5>
+                        </div>
+
+                        <div class="fs-1">
+                            💰
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Order Status -->
+
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-4">
+                📦 Status Pesanan
+            </h5>
+
+            <div class="row g-3">
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Pending
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.pending_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Paid
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.paid_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Processing
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.processing_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Shipped
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.shipped_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Completed
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.completed_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4 col-lg-2">
+                    <div class="border rounded p-3 text-center">
+                        <small class="text-muted">
+                            Cancelled
+                        </small>
+
+                        <h4 class="fw-bold mt-2">
+                            {{ summary.cancelled_orders }}
+                        </h4>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <!-- Pesanan Terbaru -->
+
+        <div class="col-lg-7">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+
+                        <h5 class="fw-bold mb-0">
+                            🕐 Pesanan Terbaru
+                        </h5>
+
+                        <a
+                            href="{% url 'dashboard:order_list' %}"
+                            class="btn btn-sm btn-outline-primary"
+                        >
+                            Lihat Semua
+                        </a>
+
+                    </div>
+
+                    <div class="table-responsive">
+
+                        <table class="table align-middle">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Order</th>
+                                    <th>User</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for order in recent_orders %}
+
+                                <tr>
+
+                                    <td>
+                                        <a
+                                            href="{% url 'orders:order_detail' order.order_number %}"
+                                            class="text-decoration-none"
+                                        >
+                                            {{ order.order_number }}
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        {{ order.user.username }}
+                                    </td>
+
+                                    <td>
+                                        Rp {{ order.total|floatformat:0 }}
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+                                    <td
+                                        colspan="4"
+                                        class="text-center text-muted"
+                                    >
+                                        Belum ada pesanan.
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Stok Menipis -->
+
+        <div class="col-lg-5">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">
+                        ⚠️ Stok Menipis
+                    </h5>
+
+                    {% for book in low_stock_books %}
+
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+
+                        <div>
+
+                            <div class="fw-semibold">
+                                {{ book.title }}
+                            </div>
+
+                            <small class="text-muted">
+                                {{ book.category.name }}
+                            </small>
+
+                        </div>
+
+                        <span class="badge bg-danger">
+                            {{ book.stock }} stok
+                        </span>
+
+                    </div>
+
+                    {% empty %}
+
+                    <div class="text-center text-muted py-4">
+
+                        ✅ Tidak ada stok menipis.
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

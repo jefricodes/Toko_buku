@@ -5,19 +5,11 @@ from books.models import Book
 
 
 class Cart(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-        related_name='cart'
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='cart')
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    created_at = models.DateTimeField( auto_now_add=True )
 
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    updated_at = models.DateTimeField( auto_now=True )
 
     def __str__(self):
         return f"Cart - {self.user.username}"
@@ -28,7 +20,6 @@ class Cart(models.Model):
             for item in self.items.all()
         )
 
-
 class CartItem(models.Model):
     cart = models.ForeignKey(
         Cart,
@@ -36,22 +27,17 @@ class CartItem(models.Model):
         related_name='items'
     )
 
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE
-    )
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
-    quantity = models.PositiveIntegerField(
-        default=1
-    )
+    quantity = models.PositiveIntegerField(default=1)
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    created_at = models.DateTimeField(auto_now_add=True)
 
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+
+        constraints = [ models.UniqueConstraint(fields=['cart','book'],name='unique_cart_book')]
 
     def __str__(self):
         return f"{self.book.title} x {self.quantity}"
@@ -71,45 +57,33 @@ class Order(models.Model):
         ('cancelled', 'Dibatalkan'),
     ]
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='orders'
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
 
-    order_number = models.CharField(
-        max_length=30,
-        unique=True
-    )
+    order_number = models.CharField(max_length=30, unique=True)
 
-    full_name = models.CharField(
-        max_length=150
-    )
+    full_name = models.CharField(max_length=150)
 
-    phone = models.CharField(
-        max_length=30
-    )
+    phone = models.CharField(max_length=30)
 
     address = models.TextField()
 
-    total = models.DecimalField(
-        max_digits=12,
-        decimal_places=2
-    )
+    total = models.DecimalField( max_digits=12, decimal_places=2)
 
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
+    # ##################
+    # Field Midtrans
+    # ##################
 
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
+    midtrans_order_id = models.CharField(max_length=100,blank=True,null=True)
+
+    payment_token = models.CharField(max_length=255,blank=True,null=True)
+
+    payment_url = models.URLField(blank=True,null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.order_number
@@ -117,34 +91,17 @@ class Order(models.Model):
 # --------------> Class Order Item <---------------
 class OrderItem(models.Model):
 
-    order = models.ForeignKey(
-        Order,
-        on_delete=models.CASCADE,
-        related_name='items'
-    )
+    order = models.ForeignKey( Order, on_delete=models.CASCADE, related_name='items')
 
-    book = models.ForeignKey(
-        Book,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
+    book = models.ForeignKey( Book, on_delete=models.SET_NULL, null=True, blank=True)
 
-    book_title = models.CharField(
-        max_length=200
-    )
+    book_title = models.CharField( max_length=200)
 
-    price = models.DecimalField(
-        max_digits=12,
-        decimal_places=2
-    )
+    price = models.DecimalField( max_digits=12, decimal_places=2 )
 
     quantity = models.PositiveIntegerField()
 
-    subtotal = models.DecimalField(
-        max_digits=12,
-        decimal_places=2
-    )
+    subtotal = models.DecimalField( max_digits=12, decimal_places=2 )
 
     def __str__(self):
         return f"{self.book_title} x {self.quantity}"

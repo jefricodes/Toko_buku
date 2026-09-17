@@ -1,76 +1,98 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Pesanan Berhasil
+    Pesanan Berhasil
 {% endblock %}
-
 
 {% block content %}
 
 <div class="container py-5">
 
-    <div class="card shadow-sm">
+    <div class="row justify-content-center">
 
-        <div class="card-body text-center py-5">
+        <div class="col-lg-7">
 
-            <div class="display-1">
-                ✅
+            <div class="card border-0 shadow-sm text-center">
+
+                <div class="card-body p-5">
+
+                    <div class="display-1 mb-3">
+                        ✅
+                    </div>
+
+
+                    <h2 class="fw-bold">
+                        Pesanan Berhasil Dibuat!
+                    </h2>
+
+
+                    <p class="text-muted mt-3">
+                        Terima kasih sudah berbelanja
+                        di BookStore.
+                    </p>
+
+
+                    <div class="bg-light rounded p-4 my-4">
+
+                        <small class="text-muted">
+                            Nomor Pesanan
+                        </small>
+
+                        <h4 class="fw-bold text-primary mt-2">
+                            {{ order.order_number }}
+                        </h4>
+
+                    </div>
+
+
+                    <div class="alert alert-warning">
+
+                        <strong>Status:</strong>
+
+                        {{ order.get_status_display }}
+
+                        <br>
+
+                        Silakan lanjutkan pembayaran
+                        untuk menyelesaikan pesanan.
+
+                    </div>
+
+
+                    <div class="d-grid gap-2">
+
+                        {% if order.status == 'pending' %}
+
+                        <a
+                            href="{% url 'orders:create_payment' order.order_number %}"
+                            class="btn btn-primary btn-lg"
+                        >
+                            💳 Bayar Sekarang
+                        </a>
+
+                        {% endif %}
+
+
+                        <a
+                            href="{% url 'orders:order_detail' order.order_number %}"
+                            class="btn btn-outline-primary"
+                        >
+                            📦 Lihat Detail Pesanan
+                        </a>
+
+
+                        <a
+                            href="{% url 'books:book_list' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            📚 Kembali Belanja
+                        </a>
+
+                    </div>
+
+                </div>
+
             </div>
-
-            <h2 class="mt-3">
-                Pesanan Berhasil Dibuat!
-            </h2>
-
-            <p class="text-muted">
-                Terima kasih sudah berbelanja.
-            </p>
-
-
-            <div class="alert alert-info">
-
-                Nomor Pesanan:
-
-                <strong>
-                    {{ order.order_number }}
-                </strong>
-
-            </div>
-
-
-            <div class="mb-4">
-
-                <p class="mb-1">
-                    Total Pesanan
-                </p>
-
-                <h3 class="text-primary">
-
-                    Rp {{ order.total|floatformat:0 }}
-
-                </h3>
-
-            </div>
-
-
-            <p>
-
-                Status:
-
-                <span class="badge bg-warning text-dark">
-
-                    {{ order.get_status_display }}
-
-                </span>
-
-            </p>
-
-
-            <a
-                href="{% url 'books:book_list' %}"
-                class="btn btn-primary"
-            >
-                Kembali Belanja
-            </a>
 
         </div>
 
