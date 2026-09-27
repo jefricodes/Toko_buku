@@ -20,7 +20,7 @@ from .serializers import (
     OrderCreateSerializer,
 )
 
-from .permissions import IsAdminOrReadOnly
+# from .permissions import IsAdminOrReadOnly
 
 
 
@@ -33,7 +33,7 @@ class BookListCreateAPIView(
     serializer_class = BookSerializer
 
     permission_classes = [
-        IsAdminOrReadOnly
+        IsAuthenticated
     ]
 
 
@@ -46,7 +46,7 @@ class BookDetailAPIView(
     serializer_class = BookSerializer
 
     permission_classes = [
-        IsAdminOrReadOnly
+        IsAuthenticated
     ]
 
 class CartAPIView(APIView):
@@ -301,3 +301,20 @@ class OrderDetailAPIView(APIView):
         return Response(
             serializer.data
         )
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class LogoutView (APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token :
+            return Response ({'detail':'Refresh token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token = RefreshToken (refresh_token)
+            token.blacklist()
+            return Response ({'detail': 'logout successful.'}, status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e :
+            return Response ({'detail':str(e)}, status=status.HTTP_400_BAD_REQUEST)

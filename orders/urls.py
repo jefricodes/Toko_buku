@@ -15,10 +15,11 @@ urlpatterns = [
     path('success/<str:order_number>/', views.order_success, name='success'),
     path('orders/', views.order_list, name='order_list'),
     path('orders/<str:order_number>/', views.order_detail, name='order_detail'),
-    path('my-orders/', views.order_list, name='order_list'),
-    path('my-orders/<str:order_number>/', views.order_detail, name='order_detail'),
-    path('payment/<str:order_number>/', views.create_payment, name='create_payment'),
+    path('my-orders/', views.order_list, name='my_order_list'),
+    path('my-orders/<str:order_number>/', views.order_detail, name='my_order_detail'),
     path('payment/notification/', views.midtrans_notification, name='midtrans_notification'),
+    path('payment/<str:order_number>/', views.create_payment, name='create_payment'),
+
 
 
 ]

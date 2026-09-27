@@ -218,15 +218,28 @@ def create_payment(request, order_number):
 
         return redirect('orders:order_detail',order_number=order.order_number)
 
-
+import json
+import logging
+logger = logging.getLogger(__name__)
 @csrf_exempt
 @require_POST
 def midtrans_notification(request):
-    data = request.data if hasattr(request, 'data') else request.POST
+    try:
+        data = json.loads(request.body)
+    except json.JSONDecodeError :
+        return JsonResponse ({'detail': 'Invalid JSON Payload'}, status=400)
+    
     order_id = data.get('order_id')
     status_code = data.get('status_code')
     gross_amount = data.get('gross_amount')
     signature_key = data.get('signature_key')
+
+
+    # data = request.data if hasattr(request, 'data') else request.POST
+    # order_id = data.get('order_id')
+    # status_code = data.get('status_code')
+    # gross_amount = data.get('gross_amount')
+    # signature_key = data.get('signature_key')
 
     if not all([
         order_id,
@@ -289,5 +302,7 @@ def midtrans_notification(request):
 
         order.status = 'cancelled'
         order.save(update_fields=['status','updated_at'])
+    else:
+        logger.warning (f'Unhandled transaction status : {transaction_status} for order {order_id}')
 
     return JsonResponse ({'detail': 'Notification berhasil diproses.'},status=200)
