@@ -1,29 +1,27 @@
-# Environment
+# Environment variables
 .env
+env/
+.env.local
 
-# Python
+# Python cache
 __pycache__/
 *.py[cod]
+*$py.class
+*.pyc
 
-# Virtual environment
-venv/
-env/
-.venv/
-
-# Django
-*.log
-db.sqlite3
-
-# Static
-staticfiles/
-
-# Media
+# Media files (user uploads)
 media/
 
-# IDE
+# Virtual Environment
+venv/
+.venv/
+
+# Static files collected
+staticfiles/
+
+# OS files (Mac)
+.DS_Store
+
+# IDE files
 .vscode/
 .idea/
-
-# OS
-.DS_Store
-Thumbs.db
