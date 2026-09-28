@@ -18,7 +18,8 @@ class DashboardService:
             'completed',
         ]
 
-        total_revenue = (Order.objects.filter(status__in=paid_statuses).aggregate(total=Sum('total'))['total']or 0)
+        total_revenue = (Order.objects.filter(status__in=paid_statuses)
+                 .aggregate(total=Sum('total'))['total'] or 0)
 
         return {
             'total_books': Book.objects.filter(is_active=True).count(),
@@ -56,6 +57,7 @@ class DashboardService:
             .order_by('stock', 'title')[:limit]
         )
 
+    
     @staticmethod
     def update_order_status(order, new_status):
 

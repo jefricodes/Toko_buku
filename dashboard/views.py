@@ -73,6 +73,10 @@ def update_order_status(request, order_number):
 
     new_status = request.POST.get('status')
 
+    if new_status in ['paid', 'sudah dibayar', 'complete', 'settlement'] :
+        messages.error (request, 'status "Sudah Dibayar" hanya dapat berubah otomatis setelah pembayara')
+        return redirect('dashboard:order_detail', order_number=order.order_number)
+
     try:
         DashboardService.update_order_status(order, new_status)
 
