@@ -20,21 +20,22 @@ from .serializers import (
     OrderCreateSerializer,
 )
 
-# from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly
 
 
-
-class BookListCreateAPIView(
-    generics.ListCreateAPIView
-):
-
-    queryset = Book.objects.all()
-
+class BookListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
+    permission_classes = [ IsAuthenticated, IsAdminOrReadOnly]
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    def get_queryset(self):
+        queryset = Book.objects.filter(is_active = True)
+        title = self.request.query_params.get('title', None)
+        category = self.request.query_params.get('category', None)
+        if title :
+            queryset = queryset.filter(title__icontains=title)
+        if category :
+            queryset = queryset.filter(category__name__icontains=category)
+        return queryset
 
 
 class BookDetailAPIView(
@@ -45,57 +46,35 @@ class BookDetailAPIView(
 
     serializer_class = BookSerializer
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [ IsAuthenticated, IsAdminOrReadOnly ]
 
 class CartAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [ IsAuthenticated ]
 
     def get(self, request):
 
-        cart = CartService.get_or_create_cart(
-            request.user
-        )
+        cart = CartService.get_or_create_cart(request.user)
 
         serializer = CartSerializer(cart)
 
-        return Response(
-            serializer.data
-        )
+        return Response(serializer.data)
 
 class CartAddAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
-        serializer = CartAddSerializer(
-            data=request.data
-        )
+        serializer = CartAddSerializer(data=request.data)
 
-        serializer.is_valid(
-            raise_exception=True
-        )
+        serializer.is_valid(raise_exception=True)
 
-        book_id = serializer.validated_data[
-            'book_id'
-        ]
+        book_id = serializer.validated_data['book_id']
 
-        quantity = serializer.validated_data[
-            'quantity'
-        ]
+        quantity = serializer.validated_data['quantity']
 
-        book = get_object_or_404(
-            Book,
-            id=book_id,
-            is_active=True
-        )
+        book = get_object_or_404(Book,id=book_id,is_active=True)
 
         try:
 
@@ -129,23 +108,15 @@ class CartAddAPIView(APIView):
 
 class CartItemUpdateAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def patch(self, request, item_id):
 
-        serializer = CartItemUpdateSerializer(
-            data=request.data
-        )
+        serializer = CartItemUpdateSerializer(data=request.data)
 
-        serializer.is_valid(
-            raise_exception=True
-        )
+        serializer.is_valid(raise_exception=True)
 
-        quantity = serializer.validated_data[
-            'quantity'
-        ]
+        quantity = serializer.validated_data['quantity']
 
         try:
 
@@ -157,30 +128,17 @@ class CartItemUpdateAPIView(APIView):
 
         except ValidationError as e:
 
-            return Response(
-                {
-                    'detail': str(e)
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        cart = CartService.get_or_create_cart(
-            request.user
-        )
+        cart = CartService.get_or_create_cart(request.user)
 
-        response_serializer = CartSerializer(
-            cart
-        )
+        response_serializer = CartSerializer(cart)
 
-        return Response(
-            response_serializer.data
-        )
+        return Response(response_serializer.data)
 
 class CartItemDeleteAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, item_id):
 
@@ -210,19 +168,13 @@ class CartItemDeleteAPIView(APIView):
 
 class OrderCreateAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
 
-        serializer = OrderCreateSerializer(
-            data=request.data
-        )
+        serializer = OrderCreateSerializer(data=request.data)
 
-        serializer.is_valid(
-            raise_exception=True
-        )
+        serializer.is_valid(raise_exception=True)
 
         order_data = serializer.validated_data
 
@@ -261,9 +213,7 @@ class OrderCreateAPIView(APIView):
 
 class OrderListAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
 
@@ -276,15 +226,11 @@ class OrderListAPIView(APIView):
             many=True
         )
 
-        return Response(
-            serializer.data
-        )
+        return Response(serializer.data)
 
 class OrderDetailAPIView(APIView):
 
-    permission_classes = [
-        IsAuthenticated
-    ]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, order_number):
 
@@ -298,9 +244,7 @@ class OrderDetailAPIView(APIView):
 
         serializer = OrderSerializer(order)
 
-        return Response(
-            serializer.data
-        )
+        return Response(serializer.data)
 
 from rest_framework_simplejwt.tokens import RefreshToken
 

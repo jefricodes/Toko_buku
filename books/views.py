@@ -36,18 +36,14 @@ def book_list(request):
     - Pagination
     """
 
-    books = Book.objects.filter(
-        is_active=True
-    ).select_related('category')
+    books = Book.objects.filter(is_active=True).select_related('category')
 
     # =========================
     # SEARCH
     # =========================
 
-    search = request.GET.get(
-        'search',
-        ''
-    ).strip()
+    search = request.GET.get('q','') or request.GET.get('seerch', '')
+    search = search.strip()
 
     if search:
 
@@ -62,15 +58,11 @@ def book_list(request):
     # FILTER KATEGORI
     # =========================
 
-    category_id = request.GET.get(
-        'category',
-        ''
-    )
+    category_slug = request.GET.get('category','').strip()
 
-    if category_id:
-
+    if category_slug:
         books = books.filter(
-            category_id=category_id
+            category__slug=category_slug
         )
 
     # =========================
@@ -97,7 +89,7 @@ def book_list(request):
         'page_obj': page_obj,
         'categories': categories,
         'search': search,
-        'selected_category': category_id,
+        'selected_category': category_slug,
     }
 
     return render(
